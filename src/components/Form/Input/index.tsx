@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInputProps } from 'react-native';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldError } from 'react-hook-form';
 
 import {
   Container,
@@ -13,20 +13,20 @@ interface Props extends TextInputProps {
   control: Control;
   name: string;
   title: string;
-  error: string;
+  error?: FieldError;
 }
 
 export function Input({
   name,
   control,
   title,
-  error,
+  error = undefined,
   ...rest
 }: Props) {
   return (
     <Container>
       <Label>{title}</Label>
-      {error && <Error>{error}</Error>}
+      {error && <Error>{error.message}</Error>}
       <Controller
         name={name}
         control={control}

@@ -36,7 +36,9 @@ export function RegisterLoginData() {
     formState: {
       errors
     }
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema)
+  });
 
   async function handleRegister(formData: FormData) {
     const newLoginData = {
@@ -45,6 +47,23 @@ export function RegisterLoginData() {
     }
 
     // Save data on AsyncStorage
+
+    try {
+      const dataKey = `@passmanager:logins`
+      const data = await AsyncStorage.getItem(dataKey);
+      const currentData = data ? JSON.parse(data) : [];
+
+      const dataFormated = [
+        ...currentData,
+        newLoginData
+      ]
+
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormated));
+   
+      reset();
+    } catch (error) {
+      Alert.alert('Não foi possível cadastrar! Tente novamente.')
+    }
   }
 
   return (
@@ -60,9 +79,7 @@ export function RegisterLoginData() {
           <Input
             title="Título"
             name="title"
-            error={
-              // message error here
-            }
+            error={errors.title}
             control={control}
             placeholder="Escreva o título aqui"
             autoCapitalize="sentences"
@@ -71,9 +88,7 @@ export function RegisterLoginData() {
           <Input
             title="Email"
             name="email"
-            error={
-              // message error here
-            }
+            error={errors.email}
             control={control}
             placeholder="Escreva o Email aqui"
             autoCorrect={false}
@@ -83,9 +98,7 @@ export function RegisterLoginData() {
           <Input
             title="Senha"
             name="password"
-            error={
-              // message error here
-            }
+            error={errors.password}
             control={control}
             secureTextEntry
             placeholder="Escreva a senha aqui"
