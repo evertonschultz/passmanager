@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useStorageData } from '../../hooks/useStorageData';
 
 import { SearchBar } from '../../components/SearchBar';
 import { LoginDataItem } from '../../components/LoginDataItem';
@@ -11,6 +11,7 @@ import {
   EmptyListContainer,
   EmptyListMessage
 } from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LoginDataProps {
   id: string;
@@ -23,30 +24,28 @@ type LoginListDataProps = LoginDataProps[];
 
 export function Home() {
   const [searchListData, setSearchListData] = useState<LoginListDataProps>([]);
-  const [data, setData] = useState<LoginListDataProps>([]);
+  const [logins, setLogins] = useState<LoginListDataProps>([]);
 
-  async function loadData() {
-    // Get asyncStorage data, use setSearchListData and setData
-    const dataKey = `@passmanager:logins`
-    const data = await AsyncStorage.getItem(dataKey);
-    const currentData = data ? JSON.parse(data) : [];
+//  const { data } = useStorageData();
+//  setLogins(data);
+//  console.log('INDEX');
+//  console.log(data);
 
-    setData(currentData);
-    setSearchListData(currentData);
+  const { getItem } = useStorageData();
+
+  async function handleLoadLoginsData() {
+  //  const dataKey = '@passmanager:logins';
+  //  await AsyncStorage.removeItem(dataKey);
+    const data = await getItem();
+    console.log('INDEX');
+    console.log(data);
+    setLogins(data);
+    setSearchListData(data);
   }
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useFocusEffect(useCallback(() => {
-    loadData();
-  }, []));
 
   function handleFilterLoginData(search: string) {
-    // Filter results inside data, save with setSearchListData
-
     const filterItems = (query: string) => {
-      return data.filter(el => el.title.toLowerCase().indexOf(query.toLowerCase()) > -1);
+      return logins.filter(el => el.title.toLowerCase().indexOf(query.toLowerCase()) > -1);
     }
 
     const filterSearch = filterItems(search);
@@ -57,8 +56,18 @@ export function Home() {
       setSearchListData([]);
     }
 
-    search.length === 0 && setSearchListData(data);
+    search.length === 0 && setSearchListData(logins);
   }
+
+  useEffect(() => {
+//    const dataKey = '@gofinaces:transactions';
+//    AsyncStorage.removeItem(dataKey);
+    handleLoadLoginsData();
+  },[]);
+
+  useFocusEffect(useCallback(() => {
+    handleLoadLoginsData();
+  },[]));
 
   return (
     <Container>

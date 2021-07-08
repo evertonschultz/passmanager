@@ -3,7 +3,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export const Container = styled.View`
-  background-color: #FFFFFF;
+  background-color: ${({ theme }) => theme.colors.shape};
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -19,7 +19,7 @@ export const LoginData = styled.View``;
 export const Password = styled.Text`
   font-size: ${(RFValue(26))}px;
   font-family: 'Poppins_500Medium';
-  color: #9883BF;
+  color: ${({ theme }) => theme.colors.text};
 
   margin: 0 auto;
 `;
@@ -28,13 +28,13 @@ export const Title = styled.Text`
   margin-bottom: ${RFValue(4)}px;
   font-family: 'Poppins_500Medium';
   font-size: ${RFValue(12)}px;
-  color: #4E3975;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const Email = styled.Text`
   font-family: 'Poppins_500Medium';
   font-size: ${RFValue(12)}px;
-  color: #9883BF;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const ShowPasswordButton = styled.TouchableOpacity``;
